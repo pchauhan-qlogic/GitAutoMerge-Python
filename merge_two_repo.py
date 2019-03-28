@@ -10,13 +10,12 @@ GITHUB = "https://github.com"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 is_cloned = os.path.isdir(os.path.join(BASE_DIR, ".git"))
 
-
 class GitAutoMergeFork(object):
     def __init__(self, user_name):
         self.username = user_name
-        self.repo = "google-cloud-java"
-        self.private_repo = self.repo + "-private"
-        # self.private_repo = "google-cloud-java" + "-private"
+        self.repo = "google-cloud-java1"
+        # self.private_repo = self.repo + "-private"
+        self.private_repo = "google-cloud-java" + "-private"
 
         self.repo1 = "{}/{}/{}".format(GITHUB, OWNER, self.repo)
         self.fork1 = "{}/{}/{}".format(GITHUB, self.username, self.repo)
@@ -81,16 +80,6 @@ class GitAutoMergeFork(object):
             return remote_name in output.stdout
         return False
 
-    def sync_master_with_upstream(self, fork, repo):
-        print("started syncing with upstream :")
-        shell.run(["git", "checkout", "{}/master".format(fork), "-f"])
-        if shell.run(["git", "diff", "{}/master".format(fork), "{}/master".format(repo)]).stdout:
-            print("different found beetween  {} master and {} master".format(fork, repo))
-            shell.run(["git", "rebase", "{}/master".format(repo)])
-            shell.run(["git", "push", fork, "{}/master".format(fork)])
-            print("succesfully rebased {} master with {} master".format(fork, repo))
-
-
     def has_more_diff(self, from_repo, to_repo):
         has_more_changes = False
         # ["git",  "diff", "master", "against_fork/master" ,"--shortstat"]
@@ -117,10 +106,6 @@ if __name__ == '__main__':
     print(username)
     git_merge = GitAutoMergeFork(username)
     git_merge.add_n_fetch_remote_repo()
-    git_merge.sync_master_with_upstream(git_merge.fork1_remote_name,
-                                        git_merge.repo1_remote_name)
-    git_merge.sync_master_with_upstream(git_merge.fork2_remote_name,
-                                        git_merge.repo1_remote_name)
 
     if git_merge.has_more_diff(git_merge.fork1_remote_name, git_merge.fork2_remote_name):
         print("more difference beetween {} master from {} master".format(git_merge.fork1_remote_name,
