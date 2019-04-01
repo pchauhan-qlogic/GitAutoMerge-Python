@@ -117,6 +117,8 @@ if __name__ == '__main__':
                                              branch_name, "--shortstat"])
 
             if merge_br_repo1_diff.stdout is "":
+                branch_name = "comparing_branch_{}".format(int(time.time()))
+                shell.run(["git", "checkout", "{}/master".format(git_merge.repo1_remote_name), "-B", branch_name])
                 shell.run(["git", "push", git_merge.fork2_remote_name, branch_name, "-f"])
                 print("{} branch has been pushed successfully.".format(branch_name))
                 out = shell.run(["hub", "pull-request", "-b", "{}/{}:master".format(OWNER, git_merge.private_repo),
@@ -125,7 +127,8 @@ if __name__ == '__main__':
                 print(out.stdout)
 
             if merge_br_repo2_diff.stdout is "":
-
+                branch_name = "comparing_branch_{}".format(int(time.time()))
+                shell.run(["git", "checkout", "{}/master".format(git_merge.repo2_remote_name), "-B", branch_name])
                 shell.run(["git", "push", git_merge.fork1_remote_name, branch_name, "-f"])
                 print("{} branch has been pushed successfully.".format(branch_name))
                 out = shell.run(["hub", "pull-request", "-b", "{}/{}:master".format(OWNER, git_merge.repo),
